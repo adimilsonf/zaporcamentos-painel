@@ -34,6 +34,13 @@ export default function Login({ setToken }) {
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
           Entrar
         </button>
+
+<p className="text-sm text-center mt-4">
+  Ainda não tem conta?{" "}
+  <a href="/register" className="text-blue-600 hover:underline">
+    Criar conta
+  </a>
+</p>
       </form>
     </div>
   );
