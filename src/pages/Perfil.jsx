@@ -9,8 +9,22 @@ export default function Perfil() {
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setUsuario(res.data);
+
+        const status = new URLSearchParams(window.location.search).get('status');
+        if (status === 'success') {
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/auth/upgrade`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          alert('✅ Plano Pro ativado com sucesso!');
+          window.location.href = '/perfil';
+        }
       } catch (err) {
         console.error('Erro ao carregar perfil', err);
         setErro('Erro ao carregar dados do usuário.');
@@ -44,7 +58,7 @@ export default function Perfil() {
               <li>Limite de 5 orçamentos</li>
               <li>Sem personalização de PDF</li>
               <li>
-                <a href="/upgrade" className="text-blue-600 hover:underline">
+                <a href="/" className="text-blue-600 hover:underline">
                   Fazer upgrade para Pro
                 </a>
               </li>
