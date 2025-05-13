@@ -4,6 +4,7 @@ import axios from 'axios';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Perfil from './pages/Perfil';
 import NovoOrcamento from './pages/NovoOrcamento';
 import OrcamentoPDF from './pages/OrcamentoPDF';
 import Navbar from './components/Navbar';
