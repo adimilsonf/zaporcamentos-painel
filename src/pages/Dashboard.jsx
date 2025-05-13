@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
-  const [plano, setPlano] = useState(''); // ✅ Novo estado para o plano do usuário
+  const [plano, setPlano] = useState('');
   const [checkoutUrl, setCheckoutUrl] = useState('');
 
   useEffect(() => {
@@ -47,21 +47,26 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Meus Orçamentos</h1>
-        {!atingiuLimite ? (
-          <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Novo Orçamento
+        <div className="flex gap-2 items-center">
+          {!atingiuLimite ? (
+            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Novo Orçamento
+            </Link>
+          ) : (
+            <div className="flex flex-col text-sm text-red-600">
+              <span>Limite do plano gratuito atingido</span>
+              <button
+                onClick={criarCheckout}
+                className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
+              >
+                Fazer upgrade para o plano Pro
+              </button>
+            </div>
+          )}
+          <Link to="/perfil" className="text-sm text-gray-700 underline hover:text-blue-600">
+            Ver Perfil
           </Link>
-        ) : (
-          <div className="flex flex-col text-sm text-red-600">
-            <span>Limite do plano gratuito atingido</span>
-            <button
-              onClick={criarCheckout}
-              className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
-            >
-              Fazer upgrade para o plano Pro
-            </button>
-          </div>
-        )}
+        </div>
       </div>
       <div className="bg-white shadow-md rounded p-4">
         {orcamentos.length === 0 ? (
