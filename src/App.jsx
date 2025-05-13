@@ -9,10 +9,13 @@ import OrcamentoPDF from './pages/OrcamentoPDF';
 import Navbar from './components/Navbar';
 
 function App() {
+  // 🟢 Inicializa token direto do localStorage
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
   }, [token]);
 
   const Layout = ({ children }) => (
