@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import NovoOrcamento from './pages/NovoOrcamento';
 import OrcamentoPDF from './pages/OrcamentoPDF';
 import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   // 🟢 Inicializa token direto do localStorage
@@ -31,6 +32,7 @@ function App() {
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={token ? <Layout><Dashboard /></Layout> : <Navigate to="/login" />} />
+        <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
         <Route path="/novo" element={token ? <Layout><NovoOrcamento /></Layout> : <Navigate to="/login" />} />
         <Route path="/orcamento/:id" element={token ? <Layout><OrcamentoPDF /></Layout> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to="/login" />} />
