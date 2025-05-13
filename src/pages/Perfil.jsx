@@ -58,9 +58,24 @@ export default function Perfil() {
               <li>Limite de 5 orçamentos</li>
               <li>Sem personalização de PDF</li>
               <li>
-                <a href="/" className="text-blue-600 hover:underline">
-                  Fazer upgrade para Pro
-                </a>
+                <button
+  onClick={async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/stripe/checkout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      window.location.href = res.data.url;
+    } catch (err) {
+      alert('Erro ao iniciar upgrade com Stripe');
+    }
+  }}
+  className="text-blue-600 hover:underline"
+>
+  Fazer upgrade para Pro
+</button>
               </li>
             </ul>
           )}
