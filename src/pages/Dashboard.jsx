@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
   const [plano, setPlano] = useState(''); // ✅ Novo estado para o plano do usuário
+  const [checkoutUrl, setCheckoutUrl] = useState('');
 
   useEffect(() => {
     const fetchOrcamentos = async () => {
@@ -26,6 +27,20 @@ export default function Dashboard() {
     fetchOrcamentos();
   }, []);
 
+  const criarCheckout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/stripe/checkout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      window.location.href = res.data.url;
+    } catch (err) {
+      console.error('Erro ao iniciar upgrade com Stripe:', err);
+    }
+  };
+
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
   return (
@@ -39,12 +54,12 @@ export default function Dashboard() {
         ) : (
           <div className="flex flex-col text-sm text-red-600">
             <span>Limite do plano gratuito atingido</span>
-            <Link
-              to="/perfil"
+            <button
+              onClick={criarCheckout}
               className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
             >
               Fazer upgrade para o plano Pro
-            </Link>
+            </button>
           </div>
         )}
       </div>
