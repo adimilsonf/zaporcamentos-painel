@@ -4,31 +4,49 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
+  const [plano, setPlano] = useState(''); // ✅ Novo estado para o plano do usuário
 
   useEffect(() => {
     const fetchOrcamentos = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orcamentos`);
-        setOrcamentos(res.data);
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const [orcRes, userRes] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/api/orcamentos`, { headers }),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, { headers })
+        ]);
+
+        setOrcamentos(orcRes.data);
+        setPlano(userRes.data.plano);
       } catch (err) {
-        console.error('Erro ao buscar orçamentos', err);
+        console.error('Erro ao buscar orçamentos ou plano', err);
       }
     };
     fetchOrcamentos();
   }, []);
 
+  const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Meus Orçamentos</h1>
-        <div className="flex gap-2">
-          <Link to="/perfil" className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
-            Perfil
-          </Link>
+        {!atingiuLimite ? (
           <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             Novo Orçamento
           </Link>
-        </div>
+        ) : (
+          <div className="flex flex-col text-sm text-red-600">
+            <span>Limite do plano gratuito atingido</span>
+            <Link
+              to="/perfil"
+              className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
+            >
+              Fazer upgrade para o plano Pro
+            </Link>
+          </div>
+        )}
       </div>
       <div className="bg-white shadow-md rounded p-4">
         {orcamentos.length === 0 ? (
