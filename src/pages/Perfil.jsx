@@ -1,10 +1,12 @@
 // src/pages/Perfil.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Perfil() {
   const [usuario, setUsuario] = useState(null);
   const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPerfil = async () => {
@@ -33,6 +35,20 @@ export default function Perfil() {
     fetchPerfil();
   }, []);
 
+  const iniciarUpgrade = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/stripe/checkout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      window.location.href = res.data.url;
+    } catch (err) {
+      alert('Erro ao iniciar upgrade com Stripe');
+    }
+  };
+
   if (erro) return <div className="p-4 text-red-500">{erro}</div>;
   if (!usuario) return <div className="p-4">Carregando...</div>;
 
@@ -58,28 +74,20 @@ export default function Perfil() {
               <li>Limite de 5 orçamentos</li>
               <li>Sem personalização de PDF</li>
               <li>
-                <button
-  onClick={async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/stripe/checkout`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      window.location.href = res.data.url;
-    } catch (err) {
-      alert('Erro ao iniciar upgrade com Stripe');
-    }
-  }}
-  className="text-blue-600 hover:underline"
->
-  Fazer upgrade para Pro
-</button>
+                <button onClick={iniciarUpgrade} className="text-blue-600 hover:underline">
+                  Fazer upgrade para Pro
+                </button>
               </li>
             </ul>
           )}
         </div>
+
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="mt-6 bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Voltar para o Dashboard
+        </button>
       </div>
     </div>
   );
