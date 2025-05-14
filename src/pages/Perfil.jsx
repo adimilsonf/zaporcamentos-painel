@@ -52,9 +52,9 @@ export default function Perfil() {
   if (erro) return <div className="p-4 text-red-500">{erro}</div>;
   if (!usuario) return <div className="p-4">Carregando...</div>;
 
-  // ✅ Formata a data de expiração se existir
-  const dataExpira = usuario.pro_expira_em
-    ? new Date(usuario.pro_expira_em).toLocaleDateString()
+  // ✅ Corrigido: usa 'expiracao_pro' (e não 'pro_expira_em') e formata para pt-BR
+  const dataExpira = usuario.expiracao_pro
+    ? new Date(usuario.expiracao_pro).toLocaleDateString('pt-BR')
     : null;
 
   return (
@@ -66,13 +66,9 @@ export default function Perfil() {
         <p><strong>Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
         <p><strong>Plano:</strong> {usuario.plano || 'Gratuito'}</p>
 
-        {/* ✅ Exibe data de expiração se plano for Pro */}
+        {/* ✅ Mostra data de expiração apenas se for Pro */}
         {usuario.plano === 'Pro' && dataExpira && (
-          <p>
-  <strong>Plano Pro expira em:</strong>{' '}
-  {usuario.expiracao_pro ? new Date(usuario.expiracao_pro).toLocaleDateString('')
-    : 'Data não disponível'}
-</p>
+          <p><strong>Plano Pro expira em:</strong> {dataExpira}</p>
         )}
 
         <div className="mt-6">
