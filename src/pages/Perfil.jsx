@@ -70,8 +70,7 @@ export default function Perfil() {
         {usuario.plano === 'Pro' && dataExpira && (
           <p>
   <strong>Plano Pro expira em:</strong>{' '}
-  {usuario.expiracao_pro
-    ? new Date(usuario.expiracao_pro).toLocaleDateString('pt-BR')
+  {usuario.expiracao_pro ? new Date(usuario.expiracao_pro).toLocaleDateString('')
     : 'Data não disponível'}
 </p>
         )}
