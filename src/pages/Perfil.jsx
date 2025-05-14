@@ -68,9 +68,7 @@ export default function Perfil() {
 
         {/* ✅ Exibe data de expiração se plano for Pro */}
         {usuario.plano === 'Pro' && dataExpira && (
-          <p className="text-sm text-gray-600 mb-2">
-            ✅ Seu plano Pro expira em: <strong>{dataExpira}</strong>
-          </p>
+          <p><strong>Plano Pro expira em:</strong> {new Date(usuario.expiracao_pro).toLocaleDateString('pt-BR')}</p>
         )}
 
         <div className="mt-6">
