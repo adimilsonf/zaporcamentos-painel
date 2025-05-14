@@ -82,13 +82,8 @@ export default function NovoOrcamento() {
     setMensagem('✅ Orçamento gerado com sucesso!');
 
     setTimeout(() => {
-      const tokenAtual = localStorage.getItem('token');
-      if (tokenAtual) {
-        navigate('/');
-      } else {
-        navigate('/login');
-      }
-    }, 2000);
+  navigate('/dashboard');
+}, 2000);
   } catch (err) {
     const erroMsg = err.response?.data?.error || '';
     if (erroMsg.toLowerCase().includes('limite')) {
