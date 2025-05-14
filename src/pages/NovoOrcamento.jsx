@@ -42,7 +42,17 @@ export default function NovoOrcamento() {
           }
         }
       );
-      navigate(`/orcamento/${res.data.id}`);
+
+      // ✅ Nova lógica para buscar e abrir o PDF
+      const pdfRes = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/orcamentos/${res.data.id}/pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        }
+      );
+      const url = window.URL.createObjectURL(new Blob([pdfRes.data], { type: 'application/pdf' }));
+      window.open(url, '_blank');
     } catch (err) {
       console.error('Erro ao criar orçamento:', err);
     } finally {
