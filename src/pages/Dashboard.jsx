@@ -1,94 +1,33 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-export default function NovoOrcamento() {
-  const [nomeCliente, setNomeCliente] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [itens, setItens] = useState([{ item: '', quantidade: 1, preco_unitario: 0 }]);
-  const [gerando, setGerando] = useState(false);
-  const [mensagem, setMensagem] = useState('');
-  const [mostrarUpgrade, setMostrarUpgrade] = useState(false);
-  const [planoUsuario, setPlanoUsuario] = useState('');
-  const navigate = useNavigate();
+export default function Dashboard() {
+  const [orcamentos, setOrcamentos] = useState([]);
+  const [plano, setPlano] = useState('');
+  const [checkoutUrl, setCheckoutUrl] = useState('');
 
   useEffect(() => {
-    const carregarPerfil = async () => {
+    const fetchOrcamentos = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setPlanoUsuario(res.data.plano);
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const [orcRes, userRes] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/api/orcamentos`, { headers }),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, { headers })
+        ]);
+
+        setOrcamentos(orcRes.data);
+        setPlano(userRes.data.plano);
       } catch (err) {
-        console.error('Erro ao carregar perfil do usuário:', err);
+        console.error('Erro ao buscar orçamentos ou plano', err);
       }
     };
-    carregarPerfil();
+    fetchOrcamentos();
   }, []);
 
-  const handleAddItem = () => {
-    setItens([...itens, { item: '', quantidade: 1, preco_unitario: 0 }]);
-  };
-
-  const handleChangeItem = (index, field, value) => {
-    const novosItens = [...itens];
-    novosItens[index][field] = field === 'quantidade' || field === 'preco_unitario' ? parseFloat(value) : value;
-    setItens(novosItens);
-  };
-
-  const valorTotal = itens.reduce((total, i) => total + (i.quantidade * i.preco_unitario), 0);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setGerando(true);
-    setMensagem('');
-    setMostrarUpgrade(false);
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/orcamentos`,
-        {
-          nomeCliente,
-          telefone,
-          descricao,
-          itens,
-          valorTotal
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      const pdfRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orcamentos/${res.data.id}/pdf`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob'
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([pdfRes.data], { type: 'application/pdf' }));
-      window.open(url, '_blank');
-
-      setMensagem('✅ Orçamento gerado com sucesso!');
-      setTimeout(() => navigate('/'), 2000);
-    } catch (err) {
-      if (err.response?.data?.error?.includes('limite')) {
-        setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para o plano Pro.');
-        setMostrarUpgrade(true);
-      } else {
-        console.error('Erro ao criar orçamento:', err);
-        setMensagem('❌ Erro ao gerar orçamento. Tente novamente.');
-      }
-    } finally {
-      setGerando(false);
-    }
-  };
-
-  const handleUpgrade = async () => {
+  const criarCheckout = async () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
@@ -98,63 +37,68 @@ export default function NovoOrcamento() {
       );
       window.location.href = res.data.url;
     } catch (err) {
-      alert('Erro ao redirecionar para o checkout.');
+      console.error('Erro ao iniciar upgrade com Stripe:', err);
     }
   };
 
-  const badge = planoUsuario === 'Pro' ? (
-    <span className="ml-2 inline-block px-2 py-1 bg-yellow-400 text-white text-xs rounded-full">Plano Ouro</span>
+  const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
+
+  const badge = plano === 'Pro' ? (
+    <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
   ) : (
-    <span className="ml-2 inline-block px-2 py-1 bg-amber-700 text-white text-xs rounded-full">Plano Bronze</span>
+    <span className="ml-2 px-2 py-1 text-xs bg-amber-700 text-white rounded-full">Plano Bronze</span>
   );
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Novo Orçamento</h2>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-bold">Meus Orçamentos</h1>
           {badge}
         </div>
-        {mensagem && (
-          <div className="mb-4 p-3 bg-yellow-100 text-sm text-yellow-800 rounded">
-            {mensagem}
-            {mostrarUpgrade && (
+        <div className="flex gap-2 items-center">
+          {!atingiuLimite ? (
+            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Novo Orçamento
+            </Link>
+          ) : (
+            <div className="flex flex-col text-sm text-red-600">
+              <span>Limite do plano gratuito atingido</span>
               <button
-                type="button"
-                onClick={handleUpgrade}
-                className="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                onClick={criarCheckout}
+                className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
               >
-                Fazer Upgrade
+                Fazer upgrade para o plano Pro
               </button>
-            )}
-          </div>
+            </div>
+          )}
+          <Link
+            to="/perfil"
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm"
+          >
+            Ver Perfil
+          </Link>
+        </div>
+      </div>
+      <div className="bg-white shadow-md rounded p-4">
+        {orcamentos.length === 0 ? (
+          <p className="text-gray-500">Nenhum orçamento cadastrado ainda.</p>
+        ) : (
+          <ul>
+            {orcamentos.map((orc) => (
+              <li key={orc.id} className="border-b py-2 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">{orc.nome_cliente}</p>
+                  <p className="text-sm text-gray-500">{new Date(orc.data_criacao).toLocaleDateString()}</p>
+                </div>
+                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline">
+                  Ver PDF
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
-        <input type="text" placeholder="Nome do cliente" value={nomeCliente}
-          onChange={(e) => setNomeCliente(e.target.value)} className="w-full mb-3 px-4 py-2 border rounded" required />
-        <input type="tel" placeholder="Telefone" value={telefone}
-          onChange={(e) => setTelefone(e.target.value)} className="w-full mb-3 px-4 py-2 border rounded" required />
-        <textarea placeholder="Descrição do serviço" value={descricao}
-          onChange={(e) => setDescricao(e.target.value)} className="w-full mb-3 px-4 py-2 border rounded" rows={3} />
-        <h3 className="font-medium mb-2">Itens</h3>
-        {itens.map((item, idx) => (
-          <div key={idx} className="flex gap-2 mb-2">
-            <input type="text" placeholder="Serviço" value={item.item}
-              onChange={(e) => handleChangeItem(idx, 'item', e.target.value)}
-              className="flex-1 px-2 py-1 border rounded" required />
-            <input type="number" placeholder="Qtd" value={item.quantidade}
-              onChange={(e) => handleChangeItem(idx, 'quantidade', e.target.value)}
-              className="w-20 px-2 py-1 border rounded" required />
-            <input type="number" placeholder="Preço" value={item.preco_unitario}
-              onChange={(e) => handleChangeItem(idx, 'preco_unitario', e.target.value)}
-              className="w-24 px-2 py-1 border rounded" required />
-          </div>
-        ))}
-        <button type="button" onClick={handleAddItem} className="text-blue-600 text-sm mb-4">+ Adicionar item</button>
-        <p className="font-semibold mb-4">Total: R$ {valorTotal.toFixed(2)}</p>
-        <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700" disabled={gerando}>
-          {gerando ? 'Gerando...' : 'Gerar Orçamento'}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
