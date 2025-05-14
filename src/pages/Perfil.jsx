@@ -52,6 +52,11 @@ export default function Perfil() {
   if (erro) return <div className="p-4 text-red-500">{erro}</div>;
   if (!usuario) return <div className="p-4">Carregando...</div>;
 
+  // ✅ Formata a data de expiração se existir
+  const dataExpira = usuario.pro_expira_em
+    ? new Date(usuario.pro_expira_em).toLocaleDateString()
+    : null;
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-md mx-auto bg-white rounded shadow p-6">
@@ -60,6 +65,13 @@ export default function Perfil() {
         <p><strong>Email:</strong> {usuario.email}</p>
         <p><strong>Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
         <p><strong>Plano:</strong> {usuario.plano || 'Gratuito'}</p>
+
+        {/* ✅ Exibe data de expiração se plano for Pro */}
+        {usuario.plano === 'Pro' && dataExpira && (
+          <p className="text-sm text-gray-600 mb-2">
+            ✅ Seu plano Pro expira em: <strong>{dataExpira}</strong>
+          </p>
+        )}
 
         <div className="mt-6">
           <h3 className="font-semibold mb-2">Recursos do plano:</h3>
@@ -71,7 +83,7 @@ export default function Perfil() {
             </ul>
           ) : (
             <ul className="list-disc list-inside text-gray-700">
-              <li>Limite de 5 orçamentos</li>
+              <li>Limite de 1 orçamento</li>
               <li>Sem personalização de PDF</li>
               <li>
                 <button onClick={iniciarUpgrade} className="text-blue-600 hover:underline">
