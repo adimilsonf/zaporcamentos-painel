@@ -82,9 +82,30 @@ export default function Dashboard() {
                   <p className="font-medium">{orc.nome_cliente}</p>
                   <p className="text-sm text-gray-500">{new Date(orc.data_criacao).toLocaleDateString()}</p>
                 </div>
-                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline">
-                  Ver PDF
-                </Link>
+               <button
+  onClick={async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/orcamentos/${orc.id}/pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        }
+      );
+
+      // Cria um link temporário para download/visualização do PDF
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      window.open(url, '_blank');
+    } catch (err) {
+      alert('Erro ao abrir PDF');
+      console.error(err);
+    }
+  }}
+  className="text-blue-600 hover:underline"
+>
+  Ver PDF
+</button>
               </li>
             ))}
           </ul>
