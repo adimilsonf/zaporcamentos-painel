@@ -32,10 +32,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={token ? <Layout><Dashboard /></Layout> : <Navigate to="/login" />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
-        <Route path="/novo" element={token ? <Layout><NovoOrcamento /></Layout> : <Navigate to="/login" />} />
-        <Route path="/orcamento/:id" element={token ? <Layout><OrcamentoPDF /></Layout> : <Navigate to="/login" />} />
+        <Route path="/novo" element={<ProtectedRoute><Layout><NovoOrcamento /></Layout></ProtectedRoute>} />
+        <Route path="/orcamento/:id" element={<ProtectedRoute><Layout><OrcamentoPDF /></Layout></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
