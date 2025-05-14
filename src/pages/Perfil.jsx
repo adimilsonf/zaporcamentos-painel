@@ -1,4 +1,3 @@
-// src/pages/Perfil.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Perfil() {
   const [usuario, setUsuario] = useState(null);
   const [erro, setErro] = useState('');
+  const [faturas, setFaturas] = useState([]); // ✅ Novo estado para histórico de pagamentos
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +27,12 @@ export default function Perfil() {
           alert('✅ Plano Pro ativado com sucesso!');
           window.location.href = '/perfil';
         }
+
+        // ✅ Busca histórico de faturas
+        const faturasRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/stripe/faturas`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFaturas(faturasRes.data);
       } catch (err) {
         console.error('Erro ao carregar perfil', err);
         setErro('Erro ao carregar dados do usuário.');
@@ -52,7 +58,6 @@ export default function Perfil() {
   if (erro) return <div className="p-4 text-red-500">{erro}</div>;
   if (!usuario) return <div className="p-4">Carregando...</div>;
 
-  // ✅ Corrigido: usa 'pro_expira_em' como vem do backend e formata para pt-BR
   const dataExpira = usuario.pro_expira_em
     ? new Date(usuario.pro_expira_em).toLocaleDateString('pt-BR')
     : null;
@@ -65,8 +70,6 @@ export default function Perfil() {
         <p><strong>Email:</strong> {usuario.email}</p>
         <p><strong>Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
         <p><strong>Plano:</strong> {usuario.plano || 'Gratuito'}</p>
-
-        {/* ✅ Exibe data de expiração apenas se for Pro e houver data */}
         {usuario.plano === 'Pro' && dataExpira && (
           <p><strong>Plano Pro expira em:</strong> {dataExpira}</p>
         )}
@@ -91,6 +94,22 @@ export default function Perfil() {
             </ul>
           )}
         </div>
+
+        {/* ✅ Histórico de faturas */}
+        {faturas.length > 0 && (
+          <div className="mt-8">
+            <h3 className="font-semibold mb-2">Histórico de Pagamentos</h3>
+            <ul className="text-sm text-gray-800">
+              {faturas.map((fatura, idx) => (
+                <li key={idx} className="border-b py-2">
+                  <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}<br />
+                  <strong>Status:</strong> {fatura.status}<br />
+                  <strong>Valor:</strong> R$ {(fatura.valor / 100).toFixed(2)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <button
           onClick={() => navigate('/dashboard')}
