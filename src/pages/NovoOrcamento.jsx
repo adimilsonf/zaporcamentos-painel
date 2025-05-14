@@ -8,6 +8,8 @@ export default function NovoOrcamento() {
   const [descricao, setDescricao] = useState('');
   const [itens, setItens] = useState([{ item: '', quantidade: 1, preco_unitario: 0 }]);
   const [gerando, setGerando] = useState(false);
+  const [mensagem, setMensagem] = useState('');
+  const [mostrarUpgrade, setMostrarUpgrade] = useState(false);
   const navigate = useNavigate();
 
   const handleAddItem = () => {
@@ -25,6 +27,8 @@ export default function NovoOrcamento() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setGerando(true);
+    setMensagem('');
+    setMostrarUpgrade(false);
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
@@ -53,10 +57,33 @@ export default function NovoOrcamento() {
       );
       const url = window.URL.createObjectURL(new Blob([pdfRes.data], { type: 'application/pdf' }));
       window.open(url, '_blank');
+
+      setMensagem('✅ Orçamento gerado com sucesso!');
+      setTimeout(() => navigate('/'), 2000);
     } catch (err) {
-      console.error('Erro ao criar orçamento:', err);
+      if (err.response?.data?.error?.includes('limite')) {
+        setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para o plano Pro.');
+        setMostrarUpgrade(true);
+      } else {
+        console.error('Erro ao criar orçamento:', err);
+        setMensagem('❌ Erro ao gerar orçamento. Tente novamente.');
+      }
     } finally {
       setGerando(false);
+    }
+  };
+
+  const handleUpgrade = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/stripe/checkout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      window.location.href = res.data.url;
+    } catch (err) {
+      alert('Erro ao redirecionar para o checkout.');
     }
   };
 
@@ -64,6 +91,20 @@ export default function NovoOrcamento() {
     <div className="min-h-screen bg-gray-100 p-4">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md max-w-2xl mx-auto">
         <h2 className="text-xl font-bold mb-4">Novo Orçamento</h2>
+        {mensagem && (
+          <div className="mb-4 p-3 bg-yellow-100 text-sm text-yellow-800 rounded">
+            {mensagem}
+            {mostrarUpgrade && (
+              <button
+                type="button"
+                onClick={handleUpgrade}
+                className="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              >
+                Fazer Upgrade
+              </button>
+            )}
+          </div>
+        )}
         <input type="text" placeholder="Nome do cliente" value={nomeCliente}
           onChange={(e) => setNomeCliente(e.target.value)} className="w-full mb-3 px-4 py-2 border rounded" required />
         <input type="tel" placeholder="Telefone" value={telefone}
