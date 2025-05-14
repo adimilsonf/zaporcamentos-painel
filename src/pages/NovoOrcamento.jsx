@@ -76,8 +76,9 @@ export default function NovoOrcamento() {
       setMensagem('✅ Orçamento gerado com sucesso!');
       setTimeout(() => navigate('/'), 2000);
     } catch (err) {
-      if (err.response?.data?.error?.includes('limite')) {
-        setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para o plano Pro.');
+      const erroMsg = err.response?.data?.error || '';
+      if (erroMsg.toLowerCase().includes('limite')) {
+        setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para continuar gerando orçamentos.');
         setMostrarUpgrade(true);
       } else {
         console.error('Erro ao criar orçamento:', err);
