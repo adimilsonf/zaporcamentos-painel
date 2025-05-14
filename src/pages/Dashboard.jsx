@@ -43,6 +43,7 @@ export default function Dashboard() {
 
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
+  // ✅ Badge visual do plano
   const badge = plano === 'Pro' ? (
     <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
   ) : (
@@ -56,21 +57,23 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold">Meus Orçamentos</h1>
           {badge}
         </div>
+
         <div className="flex gap-2 items-center">
-          {!atingiuLimite ? (
-            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-              Novo Orçamento
-            </Link>
-          ) : (
-            <div className="flex flex-col text-sm text-red-600">
-              <span>Limite do plano gratuito atingido</span>
+          {atingiuLimite ? (
+            // ✅ Novo visual do aviso de limite + botão upgrade
+            <div className="flex flex-col text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
+              ⚠️ Você atingiu o limite de 1 orçamento no plano gratuito.
               <button
                 onClick={criarCheckout}
-                className="mt-1 text-blue-600 hover:underline text-xs bg-blue-100 px-2 py-1 rounded w-fit"
+                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-fit"
               >
                 Fazer upgrade para o plano Pro
               </button>
             </div>
+          ) : (
+            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Novo Orçamento
+            </Link>
           )}
           <Link
             to="/perfil"
@@ -80,6 +83,7 @@ export default function Dashboard() {
           </Link>
         </div>
       </div>
+
       <div className="bg-white shadow-md rounded p-4">
         {orcamentos.length === 0 ? (
           <p className="text-gray-500">Nenhum orçamento cadastrado ainda.</p>
@@ -89,7 +93,9 @@ export default function Dashboard() {
               <li key={orc.id} className="border-b py-2 flex justify-between items-center">
                 <div>
                   <p className="font-medium">{orc.nome_cliente}</p>
-                  <p className="text-sm text-gray-500">{new Date(orc.data_criacao).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(orc.data_criacao).toLocaleDateString()}
+                  </p>
                 </div>
                 <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline">
                   Ver PDF
