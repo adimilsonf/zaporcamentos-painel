@@ -41,53 +41,67 @@ export default function NovoOrcamento() {
   const valorTotal = itens.reduce((total, i) => total + (i.quantidade * i.preco_unitario), 0);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setGerando(true);
-    setMensagem('');
-    setMostrarUpgrade(false);
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/orcamentos`,
-        {
-          nomeCliente,
-          telefone,
-          descricao,
-          itens,
-          valorTotal
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      const pdfRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orcamentos/${res.data.id}/pdf`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob'
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([pdfRes.data], { type: 'application/pdf' }));
-      window.open(url, '_blank');
-
-      setMensagem('✅ Orçamento gerado com sucesso!');
-      setTimeout(() => navigate('/'), 2000);
-    } catch (err) {
-      const erroMsg = err.response?.data?.error || '';
-      if (erroMsg.toLowerCase().includes('limite')) {
-        setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para continuar gerando orçamentos.');
-        setMostrarUpgrade(true);
-      } else {
-        console.error('Erro ao criar orçamento:', err);
-        setMensagem('❌ Erro ao gerar orçamento. Tente novamente.');
-      }
-    } finally {
-      setGerando(false);
+  e.preventDefault();
+  setGerando(true);
+  setMensagem('');
+  setMostrarUpgrade(false);
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setMensagem('Sua sessão expirou. Faça login novamente.');
+      return navigate('/login');
     }
-  };
+
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/orcamentos`,
+      {
+        nomeCliente,
+        telefone,
+        descricao,
+        itens,
+        valorTotal
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const pdfRes = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/orcamentos/${res.data.id}/pdf`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      }
+    );
+
+    const url = window.URL.createObjectURL(new Blob([pdfRes.data], { type: 'application/pdf' }));
+    window.open(url, '_blank');
+
+    setMensagem('✅ Orçamento gerado com sucesso!');
+
+    setTimeout(() => {
+      const tokenAtual = localStorage.getItem('token');
+      if (tokenAtual) {
+        navigate('/');
+      } else {
+        navigate('/login');
+      }
+    }, 2000);
+  } catch (err) {
+    const erroMsg = err.response?.data?.error || '';
+    if (erroMsg.toLowerCase().includes('limite')) {
+      setMensagem('⚠️ Você atingiu o limite do plano gratuito. Faça upgrade para continuar gerando orçamentos.');
+      setMostrarUpgrade(true);
+    } else {
+      console.error('Erro ao criar orçamento:', err);
+      setMensagem('❌ Erro ao gerar orçamento. Tente novamente.');
+    }
+  } finally {
+    setGerando(false);
+  }
+};
 
   const handleUpgrade = async () => {
     try {
