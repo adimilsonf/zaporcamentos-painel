@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,7 +10,23 @@ export default function NovoOrcamento() {
   const [gerando, setGerando] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [mostrarUpgrade, setMostrarUpgrade] = useState(false);
+  const [planoUsuario, setPlanoUsuario] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const carregarPerfil = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPlanoUsuario(res.data.plano);
+      } catch (err) {
+        console.error('Erro ao carregar perfil do usuário:', err);
+      }
+    };
+    carregarPerfil();
+  }, []);
 
   const handleAddItem = () => {
     setItens([...itens, { item: '', quantidade: 1, preco_unitario: 0 }]);
@@ -47,7 +63,6 @@ export default function NovoOrcamento() {
         }
       );
 
-      // ✅ Nova lógica para buscar e abrir o PDF
       const pdfRes = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/orcamentos/${res.data.id}/pdf`,
         {
@@ -87,10 +102,19 @@ export default function NovoOrcamento() {
     }
   };
 
+  const badge = planoUsuario === 'Pro' ? (
+    <span className="ml-2 inline-block px-2 py-1 bg-yellow-400 text-white text-xs rounded-full">Plano Ouro</span>
+  ) : (
+    <span className="ml-2 inline-block px-2 py-1 bg-amber-700 text-white text-xs rounded-full">Plano Bronze</span>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md max-w-2xl mx-auto">
-        <h2 className="text-xl font-bold mb-4">Novo Orçamento</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Novo Orçamento</h2>
+          {badge}
+        </div>
         {mensagem && (
           <div className="mb-4 p-3 bg-yellow-100 text-sm text-yellow-800 rounded">
             {mensagem}
