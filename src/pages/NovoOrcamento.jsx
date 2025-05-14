@@ -26,13 +26,22 @@ export default function NovoOrcamento() {
     e.preventDefault();
     setGerando(true);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/orcamentos`, {
-        nomeCliente,
-        telefone,
-        descricao,
-        itens,
-        valorTotal
-      });
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/orcamentos`,
+        {
+          nomeCliente,
+          telefone,
+          descricao,
+          itens,
+          valorTotal
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       navigate(`/orcamento/${res.data.id}`);
     } catch (err) {
       console.error('Erro ao criar orçamento:', err);
