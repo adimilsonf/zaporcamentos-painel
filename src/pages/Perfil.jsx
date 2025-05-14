@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Perfil() {
   const [usuario, setUsuario] = useState(null);
   const [erro, setErro] = useState('');
-  const [faturas, setFaturas] = useState([]); // ✅ Novo estado para histórico de pagamentos
+  const [faturas, setFaturas] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,18 +27,26 @@ export default function Perfil() {
           alert('✅ Plano Pro ativado com sucesso!');
           window.location.href = '/perfil';
         }
-
-        // ✅ Busca histórico de faturas
-        const faturasRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/stripe/faturas`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setFaturas(faturasRes.data);
       } catch (err) {
         console.error('Erro ao carregar perfil', err);
         setErro('Erro ao carregar dados do usuário.');
       }
     };
+
+    const fetchFaturas = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/stripe/faturas`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFaturas(res.data);
+      } catch (err) {
+        console.error('Erro ao carregar faturas:', err);
+      }
+    };
+
     fetchPerfil();
+    fetchFaturas();
   }, []);
 
   const iniciarUpgrade = async () => {
@@ -95,21 +103,28 @@ export default function Perfil() {
           )}
         </div>
 
-        {/* ✅ Histórico de faturas */}
-        {faturas.length > 0 && (
-          <div className="mt-8">
-            <h3 className="font-semibold mb-2">Histórico de Pagamentos</h3>
-            <ul className="text-sm text-gray-800">
-              {faturas.map((fatura, idx) => (
-                <li key={idx} className="border-b py-2">
-                  <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}<br />
-                  <strong>Status:</strong> {fatura.status}<br />
-                  <strong>Valor:</strong> R$ {(fatura.valor / 100).toFixed(2)}
+        {/* Histórico de Faturas */}
+        <div className="mt-8">
+          <h3 className="text-lg font-bold mb-2">Histórico de Faturas</h3>
+          {faturas.length === 0 ? (
+            <p className="text-gray-500">Nenhuma fatura encontrada.</p>
+          ) : (
+            <ul className="text-sm space-y-2">
+              {faturas.map((fatura, index) => (
+                <li key={index} className="border-b pb-2">
+                  <span className="block">💳 <strong>Valor:</strong> R$ {(fatura.amount_paid / 100).toFixed(2)}</span>
+                  <span className="block">🗓️ <strong>Data:</strong> {new Date(fatura.created * 1000).toLocaleDateString('pt-BR')}</span>
+                  <span className="block">📄 <strong>Status:</strong> {fatura.paid ? 'Paga' : 'Pendente'}</span>
+                  {fatura.invoice_pdf && (
+                    <a href={fatura.invoice_pdf} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      Ver Fatura PDF
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
-          </div>
-        )}
+          )}
+        </div>
 
         <button
           onClick={() => navigate('/dashboard')}
