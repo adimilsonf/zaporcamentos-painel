@@ -26,11 +26,11 @@ export default function Login({ setToken }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      {/* ✅ Logo acima do título */}
-        <div className="flex justify-center mb-6">
-          <img src={logo} alt="Zap Orçamento" className="h-12" />
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
+      
+      {/* ✅ Logo centralizada acima do card */}
+      <img src={logo} alt="Zap Orçamento" className="h-14 mb-6" />
+
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-4 text-center">Entrar</h2>
         {erro && <p className="text-red-500 text-sm mb-2">{erro}</p>}
