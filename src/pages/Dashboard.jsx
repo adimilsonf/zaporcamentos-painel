@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import logo from '../assets/menu.png'; // ✅ Importa a logo
+import logo from '../assets/menu.png'; // ✅ Importa a imagem menu
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
@@ -44,7 +44,6 @@ export default function Dashboard() {
 
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
-  // ✅ Badge visual do plano
   const badge = plano === 'Pro' ? (
     <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
   ) : (
@@ -53,33 +52,36 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
         <div className="flex items-center gap-2">
-          {/* ✅ Logo substitui o título */}
-          <img src={logo} alt="ZapOrçamento" className="h-8 md:h-10" />
+          {/* ✅ Logo do sistema */}
+          <img src={logo} alt="ZapOrçamento" className="h-8 sm:h-10" />
           {badge}
         </div>
 
-        <div className="flex gap-2 items-center">
+        {/* ✅ Botões adaptados para mobile: empilhados no mobile, lado a lado no desktop */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
           {atingiuLimite ? (
-            // ✅ Novo visual do aviso de limite + botão upgrade
-            <div className="flex flex-col text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
+            <div className="text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
               ⚠️ Você atingiu o limite de 1 orçamento no plano gratuito.
               <button
                 onClick={criarCheckout}
-                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-fit"
+                className="mt-2 sm:mt-0 sm:ml-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
               >
-                Fazer upgrade para o plano Pro
+                Fazer upgrade
               </button>
             </div>
           ) : (
-            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <Link
+              to="/novo"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center text-sm"
+            >
               Novo Orçamento
             </Link>
           )}
           <Link
             to="/perfil"
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm"
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-center text-sm"
           >
             Ver Perfil
           </Link>
@@ -99,7 +101,7 @@ export default function Dashboard() {
                     {new Date(orc.data_criacao).toLocaleDateString()}
                   </p>
                 </div>
-                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline">
+                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline text-sm">
                   Ver PDF
                 </Link>
               </li>
