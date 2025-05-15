@@ -1,6 +1,7 @@
 // components/Header.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png'; // ✅ Importa a nova logo azul
 
 export default function Header() {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -8,7 +9,11 @@ export default function Header() {
   return (
     <header className="bg-white shadow fixed top-0 left-0 right-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-600">ZapOrçamento</h1>
+        
+        {/* ✅ Substitui o texto pelo logo */}
+        <div className="flex items-center gap-2">
+          <img src={logo} alt="Zap Orçamento" className="h-10 w-auto" />
+        </div>
 
         {/* Botão menu mobile */}
         <button
