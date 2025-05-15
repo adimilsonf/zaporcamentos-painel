@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png'; // ✅ Importa a logo
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
@@ -54,7 +55,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold">Meus Orçamentos</h1>
+          {/* ✅ Logo substitui o título */}
+          <img src={logo} alt="ZapOrçamento" className="h-8 md:h-10" />
           {badge}
         </div>
 
