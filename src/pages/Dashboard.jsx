@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png'; // ✅ Importa a logo
+import logo from '../assets/menu.png'; // ✅ Importa a logo
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
