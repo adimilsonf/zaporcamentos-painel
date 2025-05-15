@@ -30,15 +30,23 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing />} /> {/* ✅ nova rota para a landing page */}
-        <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
-        <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
-        <Route path="/novo" element={<ProtectedRoute><Layout><NovoOrcamento /></Layout></ProtectedRoute>} />
-        <Route path="/orcamento/:id" element={<ProtectedRoute><Layout><OrcamentoPDF /></Layout></ProtectedRoute>} />
-        <Route path="*" element={<Navigate to="/" />} /> {/* ✅ redireciona para landing se rota inválida */}
-      </Routes>
+  {/* ✅ Landing Page como primeira rota */}
+  <Route path="/" element={<Landing />} />
+
+  {/* 🟡 Rotas de login e registro */}
+  <Route path="/login" element={<Login setToken={setToken} />} />
+  <Route path="/register" element={<Register />} />
+
+  {/* 🔒 Rotas protegidas com layout */}
+  <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+  <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+  <Route path="/novo" element={<ProtectedRoute><Layout><NovoOrcamento /></Layout></ProtectedRoute>} />
+  <Route path="/orcamento/:id" element={<ProtectedRoute><Layout><OrcamentoPDF /></Layout></ProtectedRoute>} />
+
+  {/* ❌ Essa rota wildcard deve ser a última */}
+  <Route path="*" element={<Navigate to="/" />} />
+</Routes>
+
     </Router>
   );
 }
