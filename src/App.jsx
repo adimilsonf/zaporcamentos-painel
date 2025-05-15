@@ -9,9 +9,9 @@ import NovoOrcamento from './pages/NovoOrcamento';
 import OrcamentoPDF from './pages/OrcamentoPDF';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import Landing from './pages/Landing'; // ✅ importado
 
 function App() {
-  // 🟢 Inicializa token direto do localStorage
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
@@ -30,13 +30,14 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Landing />} /> {/* ✅ nova rota para a landing page */}
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
         <Route path="/novo" element={<ProtectedRoute><Layout><NovoOrcamento /></Layout></ProtectedRoute>} />
         <Route path="/orcamento/:id" element={<ProtectedRoute><Layout><OrcamentoPDF /></Layout></ProtectedRoute>} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} /> {/* ✅ redireciona para landing se rota inválida */}
       </Routes>
     </Router>
   );
