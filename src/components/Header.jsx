@@ -30,7 +30,7 @@ export default function Header() {
         <nav className="hidden md:flex space-x-6">
           <a href="#beneficios" className="text-gray-700 hover:text-blue-600">Benefícios</a>
           <a href="#planos" className="text-gray-700 hover:text-blue-600">Planos</a>
-          <a href="#duvidas" className="text-gray-700 hover:text-blue-600">Dúvidas</a>
+          <a href="#faq" className="text-gray-700 hover:text-blue-600">Dúvidas</a>
           <Link
             to="/login"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
@@ -45,7 +45,7 @@ export default function Header() {
         <div className="md:hidden bg-white shadow px-4 py-3 space-y-2">
           <a href="#beneficios" className="block text-gray-700 hover:text-blue-600">Benefícios</a>
           <a href="#planos" className="block text-gray-700 hover:text-blue-600">Planos</a>
-          <a href="#duvidas" className="block text-gray-700 hover:text-blue-600">Dúvidas</a>
+          <a href="#faq" className="block text-gray-700 hover:text-blue-600">Dúvidas</a>
           <Link
             to="/login"
             className="block bg-blue-600 text-white text-center px-4 py-2 rounded hover:bg-blue-700 transition"
