@@ -19,7 +19,7 @@ export default function Planos() {
         <div className="bg-yellow-100 border-2 border-yellow-400 p-6 rounded shadow w-full max-w-sm text-center">
           <h3 className="text-xl font-bold mb-2">Pro</h3>
           <p className="mb-4">Para profissionais e empresas</p>
-          <p className="text-3xl font-bold mb-4">R$ 19,90/mês</p>
+          <p className="text-3xl font-bold mb-4">R$ 37,90/mês</p>
           <ul className="mb-6 text-sm">
             <li>✅ Orçamentos ilimitados</li>
             <li>✅ Suporte prioritário</li>
