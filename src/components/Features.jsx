@@ -19,7 +19,8 @@ export default function Beneficios() {
       titulo: "IA inteligente",
       descricao: "Entende mensagens de texto e voz para gerar orçamentos.",
       icone: <Bot className="w-8 h-8 text-white" />,
-      gradiente: "from-purple-500 to-fuchsia-600"
+      gradiente: "from-purple-500 to-fuchsia-600",
+      destaque: true // 🔥 Adiciona selo
     },
     {
       titulo: "Painel de controle",
@@ -45,9 +46,16 @@ export default function Beneficios() {
         {beneficios.map((b, idx) => (
           <div
             key={idx}
-            className={`p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105 bg-gradient-to-br ${b.gradiente} text-white`}
+            className={`relative p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105 bg-gradient-to-br ${b.gradiente} text-white`}
             style={{ animation: `fadeIn 0.3s ease ${idx * 0.1}s both` }}
           >
+            {/* ⭐ Selo de destaque */}
+            {b.destaque && (
+              <div className="absolute top-0 right-0 bg-yellow-400 text-xs text-white font-semibold px-2 py-1 rounded-bl-xl animate-pulse z-10">
+                ⭐ Destaque
+              </div>
+            )}
+
             <div className="flex justify-center mb-4">{b.icone}</div>
             <h3 className="text-xl font-semibold mb-2 text-center">{b.titulo}</h3>
             <p className="text-sm text-center opacity-90">{b.descricao}</p>
@@ -55,7 +63,7 @@ export default function Beneficios() {
         ))}
       </div>
 
-      {/* Fade-in animation keyframes */}
+      {/* Fade-in animation */}
       <style>
         {`
           @keyframes fadeIn {
