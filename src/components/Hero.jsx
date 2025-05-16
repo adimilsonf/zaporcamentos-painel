@@ -1,4 +1,6 @@
 // src/components/Hero.jsx
+import { ShieldCheck, Users } from 'lucide-react';
+
 export default function Hero() {
   return (
     <section className="bg-gradient-to-br from-blue-700 to-blue-500 text-white py-20 px-6 text-center">
@@ -21,13 +23,21 @@ export default function Hero() {
           Experimente grátis — sem cartão
         </a>
 
-        {/* 🔒 Prova social + garantia */}
-        <p className="text-sm text-blue-100 mt-4 italic">
-          Mais de 2.000 profissionais já usam o ZapOrçamento para vender mais rápido.
-        </p>
-        <p className="text-sm text-blue-200 mt-1">
-          🔒 Garantia sem risco: cancele a qualquer momento.
-        </p>
+        {/* 🧩 Prova social e garantia com estilo e ícones */}
+        <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4 text-sm">
+          <div className="flex items-center gap-2 text-blue-100">
+            <Users className="w-5 h-5 text-white" />
+            <span className="italic">
+              Confiado por mais de <span className="font-semibold text-white">2.000 profissionais</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-blue-100">
+            <ShieldCheck className="w-5 h-5 text-white" />
+            <span>
+              <span className="font-semibold text-white">Garantia sem risco:</span> cancele a qualquer momento
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );
