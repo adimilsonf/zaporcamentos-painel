@@ -28,7 +28,7 @@ export default function Hero() {
           <div className="flex items-center gap-2 text-blue-100">
             <Users className="w-5 h-5 text-white" />
             <span className="italic">
-              Confiado por mais de <span className="font-semibold text-white">2.000 profissionais</span>
+              Utilizado por mais de <span className="font-semibold text-white">2.000 profissionais</span>
             </span>
           </div>
           <div className="flex items-center gap-2 text-blue-100">
