@@ -9,50 +9,30 @@ export default function Perfil() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchPerfil = async () => {
-    const token = localStorage.getItem('token');
-
-    try {
-      const status = new URLSearchParams(window.location.search).get('status');
-
-      // ✅ 1. Faz login e obtém perfil
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsuario(res.data);
-
-      // ✅ 2. Se vier da confirmação do Stripe, chama upgrade
-      if (status === 'success') {
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/auth/upgrade`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        alert('✅ Plano Pro ativado com sucesso!');
-        window.location.href = '/perfil'; // limpa a URL após upgrade
-      }
-    } catch (err) {
-      console.error('Erro ao carregar perfil', err);
-      setErro('Erro ao carregar dados do usuário.');
-    }
-  };
-
-  const fetchFaturas = async () => {
-    try {
+    const fetchPerfil = async () => {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/stripe/faturas`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFaturas(res.data);
-    } catch (err) {
-      console.error('Erro ao carregar faturas:', err);
-    }
-  };
+      try {
+        const status = new URLSearchParams(window.location.search).get('status');
 
-  fetchPerfil();
-  fetchFaturas();
-}, []);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsuario(res.data);
 
+        if (status === 'success') {
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/auth/upgrade`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          alert('✅ Plano Pro ativado com sucesso!');
+          window.location.href = '/perfil';
+        }
+      } catch (err) {
+        console.error('Erro ao carregar perfil', err);
+        setErro('Erro ao carregar dados do usuário.');
+      }
+    };
 
     const fetchFaturas = async () => {
       try {
@@ -68,7 +48,7 @@ export default function Perfil() {
 
     fetchPerfil();
     fetchFaturas();
-  }, []);
+  }, []); // ✅ ← Removida vírgula isolada daqui
 
   const iniciarUpgrade = async () => {
     try {
@@ -124,7 +104,6 @@ export default function Perfil() {
           )}
         </div>
 
-        {/* Histórico de Faturas */}
         <div className="mt-8">
           <h3 className="text-lg font-bold mb-2">Histórico de Faturas</h3>
           {faturas.length === 0 ? (
