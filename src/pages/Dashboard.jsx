@@ -44,57 +44,59 @@ export default function Dashboard() {
 
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
-  // ✅ Badge e botão de upgrade se for plano gratuito
- const badge = plano === 'Pro' ? (
-  <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
-) : (
-  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm sm:text-xs">
-    <span className="px-2 py-1 bg-amber-700 text-white rounded-full text-center sm:text-left">
-      Plano Bronze
-    </span>
-    <button
-      onClick={criarCheckout}
-      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition w-full sm:w-auto"
-    >
-      Fazer upgrade
-    </button>
-  </div>
-);
-
-
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+        {/* Logo + Badge/Upgrade */}
+        <div className="flex items-center gap-3">
           <img src={logo} alt="ZapOrçamento" className="h-8 md:h-10" />
-          {badge}
+          {plano === 'Pro' ? (
+            <span className="px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-xs">
+              <span className="px-2 py-1 bg-amber-700 text-white rounded-full text-center">
+                Plano Bronze
+              </span>
+              <button
+                onClick={criarCheckout}
+                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+              >
+                Fazer upgrade
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="flex gap-2 items-center">
+        {/* Ações: novo orçamento / ver perfil */}
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           {atingiuLimite ? (
-            <div className="flex flex-col text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
+            <div className="text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow text-center">
               ⚠️ Você atingiu o limite de 1 orçamento no plano gratuito.
               <button
                 onClick={criarCheckout}
-                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-fit"
+                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-full sm:w-fit"
               >
-                Fazer upgrade para o plano Pro
+                Fazer upgrade para o Pro
               </button>
             </div>
           ) : (
-            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <Link
+              to="/novo"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center"
+            >
               Novo Orçamento
             </Link>
           )}
           <Link
             to="/perfil"
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm"
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm text-center"
           >
             Ver Perfil
           </Link>
         </div>
       </div>
 
+      {/* Lista de orçamentos */}
       <div className="bg-white shadow-md rounded p-4">
         {orcamentos.length === 0 ? (
           <p className="text-gray-500">Nenhum orçamento cadastrado ainda.</p>
