@@ -45,19 +45,22 @@ export default function Dashboard() {
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
   // ✅ Badge e botão de upgrade se for plano gratuito
-  const badge = plano === 'Pro' ? (
-    <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
-  ) : (
-    <div className="flex items-center gap-2">
-      <span className="px-2 py-1 text-xs bg-amber-700 text-white rounded-full">Plano Bronze</span>
-      <button
-        onClick={criarCheckout}
-        className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-      >
-        Fazer upgrade
-      </button>
-    </div>
-  );
+ const badge = plano === 'Pro' ? (
+  <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
+) : (
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm sm:text-xs">
+    <span className="px-2 py-1 bg-amber-700 text-white rounded-full text-center sm:text-left">
+      Plano Bronze
+    </span>
+    <button
+      onClick={criarCheckout}
+      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+    >
+      Fazer upgrade
+    </button>
+  </div>
+);
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
