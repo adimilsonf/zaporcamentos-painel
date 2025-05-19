@@ -58,11 +58,12 @@ export default function Dashboard() {
                 Plano Bronze
               </span>
               <button
-                onClick={criarCheckout}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-              >
-                Fazer upgrade
-              </button>
+  onClick={criarCheckout}
+  className="animate-pulse bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 hover:scale-105 transition transform duration-200"
+>
+  Fazer upgrade
+</button>
+
             </div>
           )}
         </div>
@@ -73,11 +74,11 @@ export default function Dashboard() {
             <div className="text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow text-center">
               ⚠️ Você atingiu o limite de 1 orçamento no plano gratuito.
               <button
-                onClick={criarCheckout}
-                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-full sm:w-fit"
-              >
-                Fazer upgrade para o Pro
-              </button>
+  onClick={criarCheckout}
+  className="mt-2 animate-pulse bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 hover:scale-105 transition w-full sm:w-fit"
+>
+  Fazer upgrade para o Pro
+</button>
             </div>
           ) : (
             <Link
