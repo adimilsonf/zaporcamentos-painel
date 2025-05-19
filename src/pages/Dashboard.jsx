@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import logo from '../assets/menu.png'; // ✅ Importa a imagem menu
+import logo from '../assets/menu.png'; // imagem com texto MENU estilizado
 
 export default function Dashboard() {
   const [orcamentos, setOrcamentos] = useState([]);
@@ -44,44 +44,48 @@ export default function Dashboard() {
 
   const atingiuLimite = plano === 'Gratuito' && orcamentos.length >= 1;
 
+  // ✅ Badge e botão de upgrade se for plano gratuito
   const badge = plano === 'Pro' ? (
     <span className="ml-2 px-2 py-1 text-xs bg-yellow-400 text-white rounded-full">Plano Ouro</span>
   ) : (
-    <span className="ml-2 px-2 py-1 text-xs bg-amber-700 text-white rounded-full">Plano Bronze</span>
+    <div className="flex items-center gap-2">
+      <span className="px-2 py-1 text-xs bg-amber-700 text-white rounded-full">Plano Bronze</span>
+      <button
+        onClick={criarCheckout}
+        className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+      >
+        Fazer upgrade
+      </button>
+    </div>
   );
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
-          {/* ✅ Logo do sistema */}
-          <img src={logo} alt="ZapOrçamento" className="h-8 sm:h-10" />
+          <img src={logo} alt="ZapOrçamento" className="h-8 md:h-10" />
           {badge}
         </div>
 
-        {/* ✅ Botões adaptados para mobile: empilhados no mobile, lado a lado no desktop */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+        <div className="flex gap-2 items-center">
           {atingiuLimite ? (
-            <div className="text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
+            <div className="flex flex-col text-sm bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow">
               ⚠️ Você atingiu o limite de 1 orçamento no plano gratuito.
               <button
                 onClick={criarCheckout}
-                className="mt-2 sm:mt-0 sm:ml-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
+                className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs w-fit"
               >
-                Fazer upgrade
+                Fazer upgrade para o plano Pro
               </button>
             </div>
           ) : (
-            <Link
-              to="/novo"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center text-sm"
-            >
+            <Link to="/novo" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
               Novo Orçamento
             </Link>
           )}
           <Link
             to="/perfil"
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-center text-sm"
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 text-sm"
           >
             Ver Perfil
           </Link>
@@ -101,7 +105,7 @@ export default function Dashboard() {
                     {new Date(orc.data_criacao).toLocaleDateString()}
                   </p>
                 </div>
-                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline text-sm">
+                <Link to={`/orcamento/${orc.id}`} className="text-blue-600 hover:underline">
                   Ver PDF
                 </Link>
               </li>
