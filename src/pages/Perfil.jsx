@@ -9,29 +9,50 @@ export default function Perfil() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPerfil = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsuario(res.data);
+  const fetchPerfil = async () => {
+    const token = localStorage.getItem('token');
 
-        const status = new URLSearchParams(window.location.search).get('status');
-        if (status === 'success') {
-          await axios.post(
-            `${import.meta.env.VITE_API_URL}/api/auth/upgrade`,
-            {},
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          alert('✅ Plano Pro ativado com sucesso!');
-          window.location.href = '/perfil';
-        }
-      } catch (err) {
-        console.error('Erro ao carregar perfil', err);
-        setErro('Erro ao carregar dados do usuário.');
+    try {
+      const status = new URLSearchParams(window.location.search).get('status');
+
+      // ✅ 1. Faz login e obtém perfil
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsuario(res.data);
+
+      // ✅ 2. Se vier da confirmação do Stripe, chama upgrade
+      if (status === 'success') {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/auth/upgrade`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert('✅ Plano Pro ativado com sucesso!');
+        window.location.href = '/perfil'; // limpa a URL após upgrade
       }
-    };
+    } catch (err) {
+      console.error('Erro ao carregar perfil', err);
+      setErro('Erro ao carregar dados do usuário.');
+    }
+  };
+
+  const fetchFaturas = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/stripe/faturas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFaturas(res.data);
+    } catch (err) {
+      console.error('Erro ao carregar faturas:', err);
+    }
+  };
+
+  fetchPerfil();
+  fetchFaturas();
+}, []);
+
 
     const fetchFaturas = async () => {
       try {
