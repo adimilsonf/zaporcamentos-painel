@@ -48,7 +48,7 @@ export default function Perfil() {
 
     fetchPerfil();
     fetchFaturas();
-  }, []); // ✅ ← Removida vírgula isolada daqui
+  }, []);
 
   const iniciarUpgrade = async () => {
     try {
@@ -112,11 +112,11 @@ export default function Perfil() {
             <ul className="text-sm space-y-2">
               {faturas.map((fatura, index) => (
                 <li key={index} className="border-b pb-2">
-                  <span className="block">💳 <strong>Valor:</strong> R$ {(fatura.amount_paid / 100).toFixed(2)}</span>
-                  <span className="block">🗓️ <strong>Data:</strong> {new Date(fatura.created * 1000).toLocaleDateString('pt-BR')}</span>
-                  <span className="block">📄 <strong>Status:</strong> {fatura.paid ? 'Paga' : 'Pendente'}</span>
-                  {fatura.invoice_pdf && (
-                    <a href={fatura.invoice_pdf} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  <span className="block">💳 <strong>Valor:</strong> R$ {fatura.total.toFixed(2)}</span>
+                  <span className="block">🗓️ <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}</span>
+                  <span className="block">📄 <strong>Status:</strong> {fatura.status === 'paid' ? 'Paga' : 'Pendente'}</span>
+                  {fatura.link && (
+                    <a href={fatura.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                       Ver Fatura PDF
                     </a>
                   )}
