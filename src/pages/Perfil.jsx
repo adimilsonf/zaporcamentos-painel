@@ -72,19 +72,29 @@ export default function Perfil() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-md mx-auto bg-white rounded shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Perfil do Usuário</h2>
-        <p><strong>Nome:</strong> {usuario.nome}</p>
-        <p><strong>Email:</strong> {usuario.email}</p>
-        <p><strong>Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
-        <p><strong>Plano:</strong> {usuario.plano || 'Gratuito'}</p>
-        {usuario.plano === 'Pro' && dataExpira && (
-          <p><strong>Plano Pro expira em:</strong> {dataExpira}</p>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">🎯 Meu Perfil</h2>
+
+        <div className="space-y-2 text-gray-800">
+          <p><strong>👤 Nome:</strong> {usuario.nome}</p>
+          <p><strong>📧 Email:</strong> {usuario.email}</p>
+          <p><strong>📱 Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
+          <p>
+            <strong>🏷️ Plano:</strong>{' '}
+            {usuario.plano === 'Pro' ? (
+              <span className="text-green-600 font-semibold">Pro</span>
+            ) : (
+              <span className="text-yellow-600 font-semibold">Gratuito</span>
+            )}
+          </p>
+          {usuario.plano === 'Pro' && dataExpira && (
+            <p><strong>🕓 Expira em:</strong> {dataExpira}</p>
+          )}
+        </div>
 
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">Recursos do plano:</h3>
+          <h3 className="font-semibold mb-2 text-gray-700">📦 Recursos do plano:</h3>
           {usuario.plano === 'Pro' ? (
             <ul className="list-disc list-inside text-green-700">
               <li>Orçamentos ilimitados</li>
@@ -92,12 +102,15 @@ export default function Perfil() {
               <li>Suporte prioritário</li>
             </ul>
           ) : (
-            <ul className="list-disc list-inside text-gray-700">
+            <ul className="list-disc list-inside text-gray-600">
               <li>Limite de 1 orçamento</li>
               <li>Sem personalização de PDF</li>
               <li>
-                <button onClick={iniciarUpgrade} className="text-blue-600 hover:underline">
-                  Fazer upgrade para Pro
+                <button
+                  onClick={iniciarUpgrade}
+                  className="mt-2 text-blue-600 font-semibold hover:underline"
+                >
+                  🚀 Fazer upgrade para Pro
                 </button>
               </li>
             </ul>
@@ -105,18 +118,33 @@ export default function Perfil() {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-lg font-bold mb-2">Histórico de Faturas</h3>
+          <h3 className="text-lg font-bold mb-3 text-gray-800">📜 Histórico de Faturas</h3>
           {faturas.length === 0 ? (
             <p className="text-gray-500">Nenhuma fatura encontrada.</p>
           ) : (
-            <ul className="text-sm space-y-2">
+            <ul className="text-sm space-y-4">
               {faturas.map((fatura, index) => (
-                <li key={index} className="border-b pb-2">
-                  <span className="block">💳 <strong>Valor:</strong> R$ {fatura.total.toFixed(2)}</span>
-                  <span className="block">🗓️ <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}</span>
-                  <span className="block">📄 <strong>Status:</strong> {fatura.status === 'paid' ? 'Paga' : 'Pendente'}</span>
+                <li
+                  key={index}
+                  className="bg-gray-50 rounded-md shadow-sm px-4 py-3 border flex flex-col sm:flex-row sm:justify-between sm:items-center"
+                >
+                  <div>
+                    <p>💳 <strong>Valor:</strong> R$ {fatura.total.toFixed(2)}</p>
+                    <p>🗓️ <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}</p>
+                    <p>
+                      📄 <strong>Status:</strong>{' '}
+                      <span className={fatura.status === 'paid' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'}>
+                        {fatura.status === 'paid' ? 'Paga' : 'Pendente'}
+                      </span>
+                    </p>
+                  </div>
                   {fatura.link && (
-                    <a href={fatura.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    <a
+                      href={fatura.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 sm:mt-0 text-blue-600 font-medium hover:underline"
+                    >
                       Ver Fatura PDF
                     </a>
                   )}
@@ -128,7 +156,7 @@ export default function Perfil() {
 
         <button
           onClick={() => navigate('/dashboard')}
-          className="mt-6 bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          className="mt-8 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
           Voltar para o Dashboard
         </button>
