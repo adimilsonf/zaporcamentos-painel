@@ -147,19 +147,47 @@ export default function NovoOrcamento() {
         <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} className="w-full mb-3 px-4 py-2 border rounded" rows={3} />
 
         <h3 className="font-medium mb-2">Itens</h3>
-        {itens.map((item, idx) => (
-          <div key={idx} className="flex gap-2 mb-2">
-            <input type="text" placeholder="Item/Serviço" value={item.item}
-              onChange={(e) => handleChangeItem(idx, 'item', e.target.value)}
-              className="flex-1 px-2 py-1 border rounded" required />
-            <input type="number" placeholder="Unidade" value={item.quantidade}
-              onChange={(e) => handleChangeItem(idx, 'quantidade', e.target.value)}
-              className="w-24 px-2 py-1 border rounded" required />
-            <input type="number" placeholder="Preço (R$)" value={item.preco_unitario}
-              onChange={(e) => handleChangeItem(idx, 'preco_unitario', e.target.value)}
-              className="w-28 px-2 py-1 border rounded" required />
-          </div>
-        ))}
+       {itens.map((item, idx) => (
+  <div key={idx} className="mb-4 space-y-2 md:space-y-0 md:flex md:gap-4">
+    <div className="flex-1">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Serviço/Item</label>
+      <input
+        type="text"
+        placeholder="Ex: Design, Mão de obra"
+        value={item.item}
+        onChange={(e) => handleChangeItem(idx, 'item', e.target.value)}
+        className="w-full px-3 py-2 border rounded"
+        required
+      />
+    </div>
+    <div className="w-full md:w-28">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Unidade</label>
+      <input
+        type="number"
+        min="1"
+        placeholder="Qtd"
+        value={item.quantidade}
+        onChange={(e) => handleChangeItem(idx, 'quantidade', e.target.value)}
+        className="w-full px-3 py-2 border rounded"
+        required
+      />
+    </div>
+    <div className="w-full md:w-32">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+      <input
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="0.00"
+        value={item.preco_unitario}
+        onChange={(e) => handleChangeItem(idx, 'preco_unitario', e.target.value)}
+        className="w-full px-3 py-2 border rounded"
+        required
+      />
+    </div>
+  </div>
+))}
+
 
         <button type="button" onClick={handleAddItem} className="text-blue-600 text-sm mb-4 flex items-center gap-1">
           <PlusCircle className="w-4 h-4" /> Adicionar item
