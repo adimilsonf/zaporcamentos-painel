@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { User, Mail, Phone, BadgeCheck, Clock, CreditCard, Calendar, FileText, ArrowLeft } from 'lucide-react';
 
 export default function Perfil() {
   const [usuario, setUsuario] = useState(null);
@@ -74,22 +75,21 @@ export default function Perfil() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-4">
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">🎯 Meu Perfil</h2>
+        <div className="flex items-center gap-2 mb-6 text-blue-700">
+          <BadgeCheck className="w-6 h-6" />
+          <h2 className="text-2xl font-bold">Meu Perfil</h2>
+        </div>
 
         <div className="space-y-2 text-gray-800">
-          <p><strong>👤 Nome:</strong> {usuario.nome}</p>
-          <p><strong>📧 Email:</strong> {usuario.email}</p>
-          <p><strong>📱 Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
-          <p>
-            <strong>🏷️ Plano:</strong>{' '}
-            {usuario.plano === 'Pro' ? (
-              <span className="text-green-600 font-semibold">Pro</span>
-            ) : (
-              <span className="text-yellow-600 font-semibold">Gratuito</span>
-            )}
+          <p className="flex items-center gap-2"><User className="w-4 h-4" /><strong>Nome:</strong> {usuario.nome}</p>
+          <p className="flex items-center gap-2"><Mail className="w-4 h-4" /><strong>Email:</strong> {usuario.email}</p>
+          <p className="flex items-center gap-2"><Phone className="w-4 h-4" /><strong>Telefone:</strong> {usuario.telefone || 'Não informado'}</p>
+          <p className="flex items-center gap-2">
+            <BadgeCheck className="w-4 h-4" />
+            <strong>Plano:</strong> {usuario.plano === 'Pro' ? <span className="text-green-600 font-semibold">Pro</span> : <span className="text-yellow-600 font-semibold">Gratuito</span>}
           </p>
           {usuario.plano === 'Pro' && dataExpira && (
-            <p><strong>🕓 Expira em:</strong> {dataExpira}</p>
+            <p className="flex items-center gap-2"><Clock className="w-4 h-4" /><strong>Expira em:</strong> {dataExpira}</p>
           )}
         </div>
 
@@ -118,7 +118,10 @@ export default function Perfil() {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-lg font-bold mb-3 text-gray-800">📜 Histórico de Faturas</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <CreditCard className="w-5 h-5 text-gray-800" />
+            <h3 className="text-lg font-bold text-gray-800">Histórico de Faturas</h3>
+          </div>
           {faturas.length === 0 ? (
             <p className="text-gray-500">Nenhuma fatura encontrada.</p>
           ) : (
@@ -129,14 +132,9 @@ export default function Perfil() {
                   className="bg-gray-50 rounded-md shadow-sm px-4 py-3 border flex flex-col sm:flex-row sm:justify-between sm:items-center"
                 >
                   <div>
-                    <p>💳 <strong>Valor:</strong> R$ {fatura.total.toFixed(2)}</p>
-                    <p>🗓️ <strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}</p>
-                    <p>
-                      📄 <strong>Status:</strong>{' '}
-                      <span className={fatura.status === 'paid' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'}>
-                        {fatura.status === 'paid' ? 'Paga' : 'Pendente'}
-                      </span>
-                    </p>
+                    <p className="flex items-center gap-1"><CreditCard className="w-4 h-4" /><strong>Valor:</strong> R$ {fatura.total.toFixed(2)}</p>
+                    <p className="flex items-center gap-1"><Calendar className="w-4 h-4" /><strong>Data:</strong> {new Date(fatura.data).toLocaleDateString('pt-BR')}</p>
+                    <p className="flex items-center gap-1"><FileText className="w-4 h-4" /><strong>Status:</strong> <span className={fatura.status === 'paid' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'}>{fatura.status === 'paid' ? 'Paga' : 'Pendente'}</span></p>
                   </div>
                   {fatura.link && (
                     <a
@@ -156,9 +154,9 @@ export default function Perfil() {
 
         <button
           onClick={() => navigate('/dashboard')}
-          className="mt-8 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="mt-8 w-full flex justify-center items-center gap-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
-          Voltar para o Dashboard
+          <ArrowLeft className="w-4 h-4" /> Voltar para o Dashboard
         </button>
       </div>
     </div>
